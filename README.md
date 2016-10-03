@@ -6,7 +6,7 @@
 
 Capture CSS above the fold with one click. Works for most websites, this extension captures 99% of the of the currently active media query CSS. Selectors like pseudo-elements don't get captured (yet), so in some cases minor tweaking is nessescary.
 
-This Chrome Extension uses a slightly altered version of this [CriticalCSS Bookmarklet and Devtool Snippetjs](https://gist.github.com/PaulKinlan/6284142)
+Inspired by [CriticalCSS Bookmarklet and Devtool Snippetjs](https://gist.github.com/PaulKinlan/6284142)
 
 ## Features
 - Capture your webpage above the fold CSS with one click
@@ -17,7 +17,6 @@ This Chrome Extension uses a slightly altered version of this [CriticalCSS Bookm
 No setup required, [Install it directly from the Chrome Webstore](https://chrome.google.com/webstore/detail/critical-snapshot/gkoeffcejdhhojognlonafnijfkcepob)
 
 ## TODO
-- Replace `window.getMatchedCSSRules();` since it is depricated
 - Implement loader
 - Support pseudo elements
 - Re-capture on window-resize for easy media-query capturing
