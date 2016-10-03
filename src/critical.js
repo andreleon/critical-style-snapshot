@@ -130,11 +130,10 @@ function getNodeCSSRules(element /*, pseudo, author_only*/) {
     return sortBySpecificity(element, result);
 };
 
-var cameback = false;
 function wittyComeback() {
-    if (cameback) return;
+    if (window.cameback) return;
     console.warn('I know, I know, \'getMatchedCSSRules()\' is depricated, but it\'s WAY faster than the polyfill. Only when it\'s completely removed will I fallback to the polyfill.');
-    cameback = true;
+    window.cameback = true;
 }
 
 (function() {
