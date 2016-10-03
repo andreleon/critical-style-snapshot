@@ -15,6 +15,15 @@ body > #CriticalSnap {
     font-family: monospace;
     text-align: center;
 }
+body > #CriticalSnap h1 {
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 28px;
+    line-height: 1.4em;
+    font-family: sans-serif;
+    text-transform: none;
+    font-style: normal;
+}
 body > #CriticalSnap > div {
     width: 500px;
     margin: 0 auto;
@@ -69,6 +78,9 @@ body > #CriticalSnap.CriticalSnap__minified {
     width: 250px;
     height: 165px;
     border-top-left-radius: 4px;
+}
+body > #CriticalSnap.CriticalSnap__minified h1 {
+    display: none;
 }
 body > #CriticalSnap.CriticalSnap__minified > div {
     width: 200px;

@@ -76,7 +76,7 @@
     var criticalWrapper = document.createElement('div');
     criticalWrapper.id = 'CriticalSnap';
 
-    var divHTML = '<div>';
+    var divHTML = '<div><h1>Critical Snapshot</h1>';
 
     divHTML += '<p id="CriticalSnap__output-css">' + css + '</p>';
     divHTML += '<div id="CriticalSnap__buttons"><button type="button" class="CriticalSnap__button" id="CriticalSnap__copy">Copy</button>';
