@@ -1,0 +1,21 @@
+{
+    "name": "Critical Snapshot",
+    "description": "Capture CSS above the fold with one click.",
+    "version": "0.0.1",
+    "default_locale": "en",
+    "permissions": [
+        "activeTab"
+    ],
+    "background": {
+        "scripts": ["index.js"],
+        "persistent": false
+    },
+    "icons": { "16": "icon16.png",
+        "48": "icon48.png",
+    "128": "icon128.png" },
+    "browser_action": {
+        "default_title": "Capture above the fold CSS of this page",
+        "default_icon": "icon128.png"
+    },
+    "manifest_version": 2
+}
