@@ -20,7 +20,6 @@
         };
 
         var parseTree = function() {
-            // Get a list of all the elements in the view.
             var height = window.innerHeight;
             var walker = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT, function(node) { return NodeFilter.FILTER_ACCEPT; }, true);
 
