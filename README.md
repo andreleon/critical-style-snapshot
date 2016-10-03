@@ -8,3 +8,5 @@ This Chrome Extension uses a slightly altered version of this [CriticalCSS Bookm
 - Replace `window.getMatchedCSSRules();` since it is depricated
 - Support pseudo elements
 - Re-capture on window-resize for easy media-query capturing
+- Auto prefixing
+- Auto optimize
