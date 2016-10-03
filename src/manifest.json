@@ -16,5 +16,6 @@
         "default_title": "Capture above the fold CSS of this page",
         "default_icon": "icon128.png"
     },
-    "manifest_version": 2
+    "manifest_version": 2,
+    "homepage_url": "https://github.com/andreleon/critical-snapshot"
 }
