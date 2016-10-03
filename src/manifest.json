@@ -1,7 +1,7 @@
 {
     "name": "Critical Snapshot",
     "description": "Capture CSS above the fold with one click.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "permissions": [
         "activeTab"
     ],
@@ -10,6 +10,7 @@
         "persistent": false
     },
     "icons": { "16": "icon16.png",
+        "24": "icon24.png",
         "48": "icon48.png",
     "128": "icon128.png" },
     "browser_action": {
