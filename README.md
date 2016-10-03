@@ -1,6 +1,8 @@
 ## Critical Snapshot
 
-![icon](/src/promotional.png?raw=true "Critical Snapshot")
+<p align="center">
+    <img width="600" src="/src/promotional.png?raw=true" text-align="center">
+</p>
 
 Capture CSS above the fold with one click. Works for most websites, this extension captures 99% of the of the currently active media query CSS. Selectors like pseudo-elements don't get captured (yet), so in some cases minor tweaking is nessescary.
 
