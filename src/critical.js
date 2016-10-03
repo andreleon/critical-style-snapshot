@@ -130,6 +130,13 @@ function getNodeCSSRules(element /*, pseudo, author_only*/) {
     return sortBySpecificity(element, result);
 };
 
+var cameback = false;
+function wittyComeback() {
+    if (cameback) return;
+    console.warn('I know, I know, \'getMatchedCSSRules()\' is depricated, but it\'s WAY faster than the polyfill. Only when it\'s completely removed will I fallback to the polyfill.');
+    cameback = true;
+}
+
 (function() {
     var CriticalCSS = function(window, document, options) {
         var options = options || {};
@@ -159,7 +166,15 @@ function getNodeCSSRules(element /*, pseudo, author_only*/) {
                 var node = walker.currentNode;
                 var rect = node.getBoundingClientRect();
                 if(rect.top < height || options.scanFullPage) {
-                    var rules = getNodeCSSRules(node);
+                    var rules;
+                    if ( typeof window.getMatchedCSSRules !== 'function' ) {
+                        rules = getNodeCSSRules(node);
+                    } else {
+                        rules = window.getMatchedCSSRules(node);
+
+                        wittyComeback();
+                    }
+                    if (!rules) rules = getNodeCSSRules(node);
 
                     if(!!rules) {
                         for (var i = 0; i < rules.length; i++) {
