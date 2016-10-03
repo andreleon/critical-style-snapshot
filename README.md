@@ -18,6 +18,7 @@ No setup required, [Install it directly from the Chrome Webstore](https://chrome
 
 ## TODO
 - Replace `window.getMatchedCSSRules();` since it is depricated
+- Implement loader
 - Support pseudo elements
 - Re-capture on window-resize for easy media-query capturing
 - Auto prefixing
