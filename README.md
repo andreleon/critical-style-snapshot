@@ -1,4 +1,4 @@
-## Critical Snapshot
+## Critical Style Snapshot
 
 <p align="center">
     <img width="440" src="/src/promotional.png?raw=true" text-align="center">
