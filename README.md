@@ -17,7 +17,7 @@ Inspired by [CriticalCSS Bookmarklet and Devtool Snippetjs](https://gist.github.
 No setup required, [Install it directly from the Chrome Webstore](https://chrome.google.com/webstore/detail/critical-snapshot/gkoeffcejdhhojognlonafnijfkcepob)
 
 ## TODO
-- Implement loader
+- Implement loader for the slower `getMatchedCSSRules()` polyfill
 - Support pseudo elements
 - Re-capture on window-resize for easy media-query capturing
 - Auto prefixing
