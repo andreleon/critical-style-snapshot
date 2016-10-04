@@ -1,3 +1,8 @@
+/*
+ * Fallback for window.getMatchedCSSRules(node);
+ * Forked from: (A Gecko only polyfill for Webkit's window.getMatchedCSSRules) https://gist.github.com/ydaniv/3033012
+ * This version is compatible with most browsers
+ */
 var ELEMENT_RE = /[\w-]+/g;
 var ID_RE = /#[\w-]+/g;
 var CLASS_RE = /\.[\w-]+/g;
@@ -29,9 +34,11 @@ function _find (string, re) {
 
 // calculates the specificity of a given `selector`
 function calculateScore (selector) {
-    var score = [0,0,0],
-        parts = selector.split(' '),
-        part, match;
+    var score = [0,0,0];
+    var parts = selector.split(' ');
+    var part;
+    var match;
+
     //TODO: clean the ':not' part since the last ELEMENT_RE will pick it up
     while ( part = parts.shift(), typeof part == 'string' ) {
         // find all pseudo-elements
@@ -67,15 +74,19 @@ function calculateScore (selector) {
 
 // returns the heights possible specificity score an element can get from a give rule's selectorText
 function getSpecificityScore (element, selector_text) {
-    var selectors = selector_text.split(','),
-        selector, score, result = 0;
-    while ( selector = selectors.shift() ) {
+    var selectors = selector_text.split(',');
+    var selector;
+    var score;
+    var result = 0;
+
+    while (selector = selectors.shift()) {
         element.matches = element.matches || element.webkitMatchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector;
         if ( element.matches(selector) ) {
             score = calculateScore(selector);
             result = score > result ? score : result;
         }
     }
+
     return result;
 }
 
@@ -91,152 +102,157 @@ function sortBySpecificity (element, rules) {
 //TODO: not supporting 2nd argument for selecting pseudo elements
 //TODO: not supporting 3rd argument for checking author style sheets only
 function getNodeCSSRules(element /*, pseudo, author_only*/) {
-    var style_sheets, sheet, sheet_media,
-        rules, rule,
-        result = [];
+    var style_sheets;
+    var sheet;
+    var sheet_media;
+    var rules;
+    var rule;
+    var result = [];
+
     // get stylesheets and convert to a regular Array
     style_sheets = toArray(window.document.styleSheets);
 
     // assuming the browser hands us stylesheets in order of appearance
     // we iterate them from the beginning to follow proper cascade order
-    while ( sheet = style_sheets.shift() ) {
+    while (sheet = style_sheets.shift()) {
         // get the style rules of this sheet
         rules = getSheetRules(sheet);
         // loop the rules in order of appearance
-        while ( rule = rules.shift() ) {
+        while (rule = rules.shift()) {
             // if this is an @import rule
-            if ( rule.styleSheet ) {
+            if (rule.styleSheet) {
                 // insert the imported stylesheet's rules at the beginning of this stylesheet's rules
                 rules = getSheetRules(rule.styleSheet).concat(rules);
                 // and skip this rule
                 continue;
             }
             // if there's no stylesheet attribute BUT there IS a media attribute it's a media rule
-            else if ( rule.media ) {
+            else if (rule.media) {
                 // insert the contained rules of this media rule to the beginning of this stylesheet's rules
                 rules = getSheetRules(rule).concat(rules);
                 // and skip it
                 continue
             }
-            //TODO: for now only polyfilling Gecko
+
             // check if this element matches this rule's selector
-            if ( element.matches(rule.selectorText) ) {
+            if (element.matches(rule.selectorText)) {
                 // push the rule to the results set
                 result.push(rule);
             }
         }
     }
+
     // sort according to specificity
     return sortBySpecificity(element, result);
 };
 
-function wittyComeback() {
-    if (window.cameback) return;
-    console.warn('I know, I know, \'getMatchedCSSRules()\' is depricated, but it\'s WAY faster than the polyfill. Only when it\'s completely removed will I fallback to the polyfill.');
-    window.cameback = true;
+function explainWarning() {
+    if (window.explained) return;
+    console.log('%cWhen \'getMatchedCSSRules()\' is removed, Critical Snapshot will fallback to a polyfill. Untill then, we will use the native version for better performance.', 'color: aqua;');
+    window.explained = true;
 }
 
-(function() {
-    var CriticalCSS = function(window, document, options) {
-        var options = options || {};
-        var parsedCSS = {};
+// Selects element text by ID
+function selectText(id) {
+    var element = document.getElementById(id)
 
-        var pushCSS = function(rule) {
-            if(!!parsedCSS[rule.selectorText] === false) parsedCSS[rule.selectorText] = {};
+    var range = document.createRange();
+    range.selectNodeContents(element);
 
-            var styles = rule.style.cssText.split(/;(?![A-Za-z0-9])/);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
 
-            styles.forEach(function(style) {
-                if(!!style === false) return;
+// removes all css styles from the webpage
+function removeDocumentStyles() {
+    var appCssElements = [].slice.call(document.querySelectorAll('[type="text/css"]'));
+    appCssElements.forEach(function(elm) {
+        elm.remove();
+    });
 
-                var pair = style.split(': ');
-                pair[0] = pair[0].trim();
-                pair[1] = pair[1].trim();
-                parsedCSS[rule.selectorText][pair[0]] = pair[1];
+    var appStyleElements = [].slice.call(document.getElementsByTagName('style'));
+    appStyleElements.forEach(function(elm) {
+        elm.remove();
+    });
+}
 
-            });
-        };
+// CSS generator
+var CriticalSnapshot = function(window, document, options) {
+    var options = options || {};
+    var parsedCSS = {};
 
-        var parseTree = function() {
-            var height = window.innerHeight;
-            var walker = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT, function(node) { return NodeFilter.FILTER_ACCEPT; }, true);
+    var pushCSS = function(rule) {
+        if(!!parsedCSS[rule.selectorText] === false) parsedCSS[rule.selectorText] = {};
 
-            while(walker.nextNode()) {
-                var node = walker.currentNode;
-                var rect = node.getBoundingClientRect();
-                if(rect.top < height || options.scanFullPage) {
-                    var rules;
-                    if ( typeof window.getMatchedCSSRules !== 'function' ) {
-                        rules = getNodeCSSRules(node);
-                    } else {
-                        rules = window.getMatchedCSSRules(node);
+        var styles = rule.style.cssText.split(/;(?![A-Za-z0-9])/);
 
-                        wittyComeback();
-                    }
-                    if (!rules) rules = getNodeCSSRules(node);
+        styles.forEach(function(style) {
+            if(!!style === false) return;
 
-                    if(!!rules) {
-                        for (var i = 0; i < rules.length; i++) {
-                            pushCSS(rules[i]);
+            var pair = style.split(': ');
+            pair[0] = pair[0].trim();
+            pair[1] = pair[1].trim();
+            parsedCSS[rule.selectorText][pair[0]] = pair[1];
 
-                        }
-                    }
-
-                }
-            }
-        };
-
-        this.generate = function() {
-            var outputCSS = '';
-
-            for(var key in parsedCSS) {
-                outputCSS += key + '{';
-
-                for(var innerKey in parsedCSS[key]) {
-                    outputCSS += innerKey + ':' + parsedCSS[key][innerKey] + ';';
-
-                }
-
-                outputCSS += '}';
-            }
-
-            return outputCSS;
-        };
-
-        parseTree();
+        });
     };
 
-    function selectText(containerid) {
-        var el = document.getElementById(containerid)
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-    document.body.scrollTop = 0;
+    var parseTree = function() {
+        var height = window.innerHeight;
+        var walker = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT, function(node) { return NodeFilter.FILTER_ACCEPT; }, true);
 
-    var ccss = new CriticalCSS(window, document);
-    var css = ccss.generate();
+        while(walker.nextNode()) {
+            var node = walker.currentNode;
+            var rect = node.getBoundingClientRect();
+            if(rect.top < height || options.scanFullPage) {
+                var rules;
+                if ( typeof window.getMatchedCSSRules !== 'function' ) {
+                    rules = getNodeCSSRules(node);
+                } else {
+                    rules = window.getMatchedCSSRules(node);
 
-    var criticalWrapper = document.createElement('div');
-    criticalWrapper.id = 'CriticalSnap';
+                    explainWarning();
+                }
+                if (!rules) rules = getNodeCSSRules(node);
 
-    var divHTML = '<div><h1>Critical Snapshot</h1>';
+                if(!!rules) {
+                    for (var i = 0; i < rules.length; i++) {
+                        pushCSS(rules[i]);
 
-    divHTML += '<p id="CriticalSnap__output-css">' + css + '</p>';
-    divHTML += '<div id="CriticalSnap__buttons"><button type="button" class="CriticalSnap__button" id="CriticalSnap__copy">Copy</button>';
-    divHTML += '<button type="button" class="CriticalSnap__button" id="CriticalSnap__preview">Preview</button>';
-    divHTML += '<button type="button" class="CriticalSnap__button" id="CriticalSnap__close">Close</button></div>';
+                    }
+                }
 
-    divHTML += '</div>';
-    criticalWrapper.innerHTML = divHTML;
+            }
+        }
+    };
 
-    document.body.appendChild(criticalWrapper);
+    this.generate = function() {
+        var outputCSS = '';
 
-    var copyHandler = function(event) {
+        for(var key in parsedCSS) {
+            outputCSS += key + '{';
+
+            for(var innerKey in parsedCSS[key]) {
+                outputCSS += innerKey + ':' + parsedCSS[key][innerKey] + ';';
+
+            }
+
+            outputCSS += '}';
+        }
+
+        return outputCSS;
+    };
+
+    parseTree();
+};
+
+// Generates the popup with wich the user will interact
+function generatePopup() {
+    var copyGeneratedStylesheet = function(event) {
         event.preventDefault();
         event.stopPropagation();
+
         selectText('CriticalSnap__output-css');
         document.execCommand('copy');
         copyButton.style.backgroundColor = "#34A853";
@@ -244,59 +260,85 @@ function wittyComeback() {
         copyButton.innerHTML = "Copied <span>👍</span>";
     };
 
-    var previewHandler = function(event) {
+    var previewGeneratedStylesheet = function(event) {
         event.preventDefault();
         event.stopPropagation();
 
-        const appCssElements = [].slice.call(document.querySelectorAll('[type="text/css"]'));
-        appCssElements.forEach(function(elm) {
-            elm.remove();
-        });
-        const appStyleElements = [].slice.call(document.getElementsByTagName('style'));
-        appStyleElements.forEach(function(elm) {
-            elm.remove();
-        });
+        removeDocumentStyles();
 
         var previewStyle = document.createElement('style');
-        previewStyle.innerHTML = css;
+        previewStyle.innerHTML = stylesheet;
         document.getElementsByTagName('head')[0].appendChild(previewStyle);
 
-        previewButton.removeEventListener('click', previewHandler);
+        previewButton.removeEventListener('click', previewGeneratedStylesheet);
         previewButton.remove();
 
-        minify();
+        minifyPopup();
     };
 
-    var selectHandler = function(event) {
+    var selectGeneratedStylesheet = function(event) {
         event.preventDefault();
         event.stopPropagation();
         selectText('CriticalSnap__output-css');
     };
 
-    var closeHandler = function(event) {
+    var closePopup = function(event) {
         if (event) event.preventDefault();
-        destroy();
+        destroyPopup();
     };
 
-    var minify = function() {
-        criticalWrapper.className = 'CriticalSnap__minified';
+    var createPopup = function(content) {
+        var popup = document.createElement('div');
+        popup.id = 'CriticalSnap';
+
+        var divHTML = '';
+        divHTML +=  '<div><h1>Critical Snapshot</h1>';
+        divHTML +=      '<p id="CriticalSnap__output-css">';
+        divHTML +=          content
+        divHTML +=      '</p>';
+        divHTML +=      '<div id="CriticalSnap__buttons">';
+        divHTML +=          '<button type="button" class="CriticalSnap__button" id="CriticalSnap__copy">Copy</button>';
+        divHTML +=          '<button type="button" class="CriticalSnap__button" id="CriticalSnap__preview">Preview</button>';
+        divHTML +=          '<button type="button" class="CriticalSnap__button" id="CriticalSnap__close">Close</button>';
+        divHTML +=      '</div>';
+        divHTML +=  '</div>';
+
+        popup.innerHTML = divHTML;
+
+        return popup;
     };
+
+    var minifyPopup = function() {
+        popup.className = 'CriticalSnap__minified';
+    };
+
+    var destroyPopup = function() {
+        copyButton.removeEventListener('click', copyGeneratedStylesheet);
+        previewButton.removeEventListener('click', previewGeneratedStylesheet);
+        outputElement.removeEventListener('click', selectGeneratedStylesheet);
+        containerElement.removeEventListener('click', closePopup);
+        popup.remove();
+    };
+
+    // scroll to top before generating CSS
+    document.body.scrollTop = 0;
+
+    var snapshot = new CriticalSnapshot(window, document);
+    var stylesheet = snapshot.generate();
+
+    var popup = createPopup(stylesheet);
+    document.body.appendChild(popup);
 
     var copyButton = document.getElementById('CriticalSnap__copy');
     var previewButton = document.getElementById('CriticalSnap__preview');
     var outputElement = document.getElementById('CriticalSnap__output-css');
     var containerElement = document.getElementById('CriticalSnap');
 
-    copyButton.addEventListener('click', copyHandler);
-    previewButton.addEventListener('click', previewHandler);
-    outputElement.addEventListener('click', selectHandler);
-    containerElement.addEventListener('click', closeHandler);
+    copyButton.addEventListener('click', copyGeneratedStylesheet);
+    previewButton.addEventListener('click', previewGeneratedStylesheet);
+    outputElement.addEventListener('click', selectGeneratedStylesheet);
+    containerElement.addEventListener('click', closePopup);
+};
 
-    var destroy = function() {
-        copyButton.removeEventListener('click', copyHandler);
-        previewButton.removeEventListener('click', previewHandler);
-        outputElement.removeEventListener('click', selectHandler);
-        containerElement.removeEventListener('click', closeHandler);
-        criticalWrapper.remove();
-    };
-})();
+// initialize
+generatePopup();
