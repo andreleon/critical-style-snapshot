@@ -1,7 +1,7 @@
 {
-    "name": "Critical Snapshot",
+    "name": "Critical Style Snapshot",
     "description": "Capture CSS above the fold with one click.",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "permissions": [
         "activeTab"
     ],
@@ -22,5 +22,5 @@
         }
     },
     "manifest_version": 2,
-    "homepage_url": "https://github.com/andreleon/critical-snapshot"
+    "homepage_url": "https://github.com/andreleon/critical-style-snapshot"
 }
