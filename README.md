@@ -21,10 +21,12 @@ Resize your browser window to the desired device width and click the capture ico
 
 Example:
 ```
-<style>
-    ..output css
-</style>
-`<link rel="stylesheet" href="style.css" ../>`
+<head>
+    <style>
+        ..output css
+    </style>
+    <link rel="stylesheet" href="style.css" ../>
+</head>
 ```
 
 ### @media queries
@@ -33,20 +35,22 @@ This plugin only outputs CSS that is **currently active**, meaning you have full
 
 Example:
 ```
-<style>
-    ..mobile screen output css
-    
-    @media screen and (min-width: 768px) {
-        ..tablet screen output css    
-    }
-    
-    @media screen and (min-width: 1024px) {
-        ..desktop screen output css
-    }
-    
-    ..etc
-</style>
-`<link rel="stylesheet" href="style.css" ../>`
+<head>
+    <style>
+        ..mobile screen output css
+
+        @media screen and (min-width: 768px) {
+            ..tablet screen output css    
+        }
+
+        @media screen and (min-width: 1024px) {
+            ..desktop screen output css
+        }
+
+        ..etc
+    </style>
+    <link rel="stylesheet" href="style.css" ../>
+</head>
 ```
 
 ### Optimization
