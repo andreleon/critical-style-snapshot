@@ -54,7 +54,7 @@ Example:
 ```
 
 ### CSS Optimization (recommended)
-As you might guess, the plugin does not (yet) optimize the CSS, meaning every time you capture the CSS for a specific media query, you will (most likely) get some redundant CSS that was already captured for smaller screens. For this I recommend you run all your "above the fold" CSS through some CSS optimizers.
+As you might guess, the plugin does not (yet) optimize the CSS, meaning every time you capture the CSS for a specific media query, you will (most likely) get some redundant CSS that was already captured for smaller screens. For this I recommend you run your final "above the fold" CSS through some CSS optimizers.
 
 These are some optimizers I find very useful that solve most of these issues:
 
