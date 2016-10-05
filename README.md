@@ -56,6 +56,8 @@ Example:
 ### CSS Optimization (recommended)
 As you might guess, the plugin does not (yet) optimize the CSS, meaning every time you capture the CSS for a specific media query, you will (most likely) get some redundant CSS that was already captured for smaller screens. For this I recommend you run all your "above the fold" CSS through some CSS optimizers.
 
+These are some optimizers I find very useful that solve most of these issues:
+
 [PostCSS](https://github.com/postcss/postcss)
 >PostCSS is a tool for transforming styles with JS plugins. These plugins can lint your CSS, support variables and mixins, transpile future CSS syntax, inline images, and more.
 
