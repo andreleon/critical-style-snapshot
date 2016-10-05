@@ -31,7 +31,7 @@ Example:
 
 ### @media queries
 
-This plugin only outputs CSS that is **currently active**, meaning you have full control over the media specific styles you capture by resizing your browser window.
+This plugin only outputs CSS that is **currently active**, meaning you have full control over the media specific styles you capture by resizing your browser window. So to capture for multiple screen widths, you will have to capture on multiple screen widths.
 
 Example:
 ```
