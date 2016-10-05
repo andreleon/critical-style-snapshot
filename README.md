@@ -73,6 +73,7 @@ These are some optimizers I find very useful that solve most of these issues:
 Using these optimizations I was able to reduce the outputted CSS size by around 80%. Ofcourse you are free to choose any other CSS optimization tools, this is just what worked best for me..
 
 ## TODO
+- Pretty output CSS option
 - Implement loader for the slower `getMatchedCSSRules()` polyfill
 - Support pseudo elements
 - Re-capture on window-resize for easy media-query capturing
