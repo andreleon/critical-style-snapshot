@@ -64,7 +64,7 @@ As you might guess, the plugin does not (yet) optimize the CSS, meaning every ti
 [PostCSS Clean](https://github.com/leodido/postcss-clean) **Minify the CSS**
 >PostCss plugin to minify your CSS
 
-Using these optimizations I was able to reduce the ourputted CSS size by around 80%. Ofcourse you are free to choose any other CSS optimization tools, this is just what worked best for me 😉
+Using these optimizations I was able to reduce the outputted CSS size by around 80%. Ofcourse you are free to choose any other CSS optimization tools, this is just what worked best for me..
 
 ## TODO
 - Implement loader for the slower `getMatchedCSSRules()` polyfill
