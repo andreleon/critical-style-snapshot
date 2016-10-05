@@ -17,7 +17,7 @@ Inspired by [CriticalCSS Bookmarklet and Devtool Snippetjs](https://gist.github.
 No setup required, [Install it directly from the Chrome Webstore](https://chrome.google.com/webstore/detail/critical-snapshot/gkoeffcejdhhojognlonafnijfkcepob)
 
 ## Usage
-Resize your browser window to the desired device width and click the capture ![icon](/src/icon19.png "icon") in your chome extensions bar. Copy the outputted style, then paste it in a style element just before the first `<link rel="stylesheet" href="style.css" ../>` element. This way your project CSS will override the "above the fold" CSS when it is loaded.
+Resize your browser window to the desired device width and click the capture icon ![icon](/src/icon19.png "icon") in your chome extensions bar. Copy the outputted style, then paste it in a style element just before the first `<link rel="stylesheet" href="style.css" ../>` element. This way your project CSS will override the "above the fold" CSS when it is loaded.
 
 Example:
 ```
