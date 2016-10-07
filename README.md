@@ -79,3 +79,6 @@ Using these optimizations I was able to reduce the outputted CSS size by around 
 - Re-capture on window-resize for easy media-query capturing
 - Auto prefixing
 - Auto optimize
+
+## Info
+More on [Critical Rendering Path](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/)
