@@ -135,10 +135,18 @@ function getNodeCSSRules(element /*, pseudo, author_only*/) {
                 continue
             }
 
-            // check if this element matches this rule's selector
-            if (element.matches(rule.selectorText)) {
-                // push the rule to the results set
-                result.push(rule);
+            // TODO: deal with unusual selectors
+            // Some sites use selectors like '[ng:cloak]' wich is not a valid selector
+            // try-catching this allows the plugin to work
+            try {
+                // check if this element matches this rule's selector
+                if (element.matches(rule.selectorText)) {
+                    // push the rule to the results set
+                    result.push(rule);
+                }
+            }
+            catch (e) {
+                // do nothing
             }
         }
     }
@@ -169,6 +177,11 @@ function selectText(id) {
 function removeDocumentStyles() {
     var appCssElements = [].slice.call(document.querySelectorAll('[type="text/css"]'));
     appCssElements.forEach(function(elm) {
+        elm.remove();
+    });
+
+    var appStylesheetElements = [].slice.call(document.querySelectorAll('[rel="stylesheet"]'));
+    appStylesheetElements.forEach(function(elm) {
         elm.remove();
     });
 
