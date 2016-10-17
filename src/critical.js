@@ -13,6 +13,7 @@ var PSEUDO_ELEMENTS_RE = /\:\:?(after|before|first-letter|first-line|selection)/
 
 // convert an array-like object to array
 function toArray (list) {
+    list = list || {};
     return [].slice.call(list);
 }
 
