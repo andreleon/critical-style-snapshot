@@ -1411,10 +1411,6 @@ var _CriticalCSS = require('../generators/CriticalCSS.jsx');
 
 var _CriticalCSS2 = _interopRequireDefault(_CriticalCSS);
 
-var _DocumentCSSMediaRules = require('../generators/DocumentCSSMediaRules.jsx');
-
-var _DocumentCSSMediaRules2 = _interopRequireDefault(_DocumentCSSMediaRules);
-
 var _selectText = require('../utilities/selectText.jsx');
 
 var _selectText2 = _interopRequireDefault(_selectText);
@@ -1427,8 +1423,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Generates the popup with wich the user will interact
 function showPopup() {
-    var jaja = new _DocumentCSSMediaRules2.default();
-    console.log(jaja.generate());
     var copyGeneratedStylesheet = function copyGeneratedStylesheet(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -1523,7 +1517,7 @@ function showPopup() {
 exports.showPopup = showPopup;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/components/popup.jsx","/components")
-},{"../generators/CriticalCSS.jsx":7,"../generators/DocumentCSSMediaRules.jsx":8,"../polyfills/get-matched-css-rules.jsx":9,"../utilities/removeDocumentStyles.jsx":13,"../utilities/selectText.jsx":14,"buffer":2,"rH1JPG":4}],6:[function(require,module,exports){
+},{"../generators/CriticalCSS.jsx":7,"../polyfills/get-matched-css-rules.jsx":8,"../utilities/removeDocumentStyles.jsx":10,"../utilities/selectText.jsx":11,"buffer":2,"rH1JPG":4}],6:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1531,7 +1525,7 @@ var _popup = require('./components/popup.jsx');
 
 (0, _popup.showPopup)();
 
-}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_1f351a4e.js","/")
+}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_3d28b01d.js","/")
 },{"./components/popup.jsx":5,"buffer":2,"rH1JPG":4}],7:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
@@ -1617,82 +1611,7 @@ var CriticalCSS = function CriticalCSS(window, document, options) {
 exports.default = CriticalCSS;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/generators/CriticalCSS.jsx","/generators")
-},{"../utilities/explainWarning.jsx":12,"buffer":2,"rH1JPG":4}],8:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _arrayContainsObject = require('../utilities/arrayContainsObject.jsx');
-
-var _arrayContainsObject2 = _interopRequireDefault(_arrayContainsObject);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var DocumentCSSMediaRules = function DocumentCSSMediaRules() {
-    var documentMediaRules = [];
-    var toArray = function toArray(list) {
-        list = list || {};
-        return [].slice.call(list);
-    };
-
-    var stylesheets = toArray(document.styleSheets);
-    stylesheets.forEach(function (stylesheet) {
-        var rules = toArray(stylesheet.cssRules || stylesheet.rules || []);
-        rules.forEach(function (rule) {
-            // console.log(rule.type)
-            if (rule.type === CSSRule.MEDIA_RULE) documentMediaRules.push(rule);
-        });
-    });
-
-    var hasNumber = function hasNumber(text) {
-        var number = parseFloat(text.replace(/[^\d.]/g, ''));
-        return !isNaN(number);
-    };
-
-    this.generate = function () {
-        var unique = [];
-        documentMediaRules.forEach(function (item) {
-            var mediaRegEx = /[\(](min-width|max-width):\s([0-9]{1,})(rem|em|px|%|vw|vh|cm|ex|in|mm|pc|pt|vmin)[\)]/gi;
-            var queries = item.media.mediaText.match(mediaRegEx);
-            if (!queries) return;
-            var mediaObject = queries.reduce(function (outputObject, query) {
-                var regex = /[\(](min-width|max-width):\s([0-9]{1,})(rem|em|px|%|vw|vh|cm|ex|in|mm|pc|pt|vmin)[\)]/gi;
-                var match = regex.exec(query);
-                if (match) {
-                    outputObject[match[1]] = {
-                        value: parseInt(match[2]),
-                        unit: match[3]
-                    };
-                }
-                return outputObject;
-            }, {});
-
-            if (!(0, _arrayContainsObject2.default)(unique, mediaObject)) unique.push(mediaObject);
-        });
-        return unique.sort(function (a, b) {
-            if (a['min-width'] && b['min-width']) {
-                if (a['min-width'].value < b['min-width'].value) return -1;
-                if (a['min-width'].value > b['min-width'].value) return 1;
-            }
-            if (!a['min-width'] && b['min-width']) {
-                if (a['max-width'].value < b['min-width'].value) return -1;
-                if (a['max-width'].value > b['min-width'].value) return 1;
-            }
-            if (a['min-width'] && !b['min-width']) {
-                if (a['min-width'].value < b['max-width'].value) return -1;
-                if (a['min-width'].value > b['max-width'].value) return 1;
-            }
-            return 0;
-        });
-    };
-}; // regex: [\(](min-width|max-width):\s([0-9]{1,})(rem|em|px|%|vw|vh|cm|ex|in|mm|pc|pt|vmin)[\)]
-exports.default = DocumentCSSMediaRules;
-
-}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/generators/DocumentCSSMediaRules.jsx","/generators")
-},{"../utilities/arrayContainsObject.jsx":10,"buffer":2,"rH1JPG":4}],9:[function(require,module,exports){
+},{"../utilities/explainWarning.jsx":9,"buffer":2,"rH1JPG":4}],8:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1858,45 +1777,7 @@ function getNodeCSSRules(element /*, pseudo, author_only*/) {
 exports.default = getNodeCSSRules;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/polyfills/get-matched-css-rules.jsx","/polyfills")
-},{"buffer":2,"rH1JPG":4}],10:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _equalObjects = require('../utilities/equalObjects.jsx');
-
-var _equalObjects2 = _interopRequireDefault(_equalObjects);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function arrayContainsObject(array, object) {
-    return array.reduce(function (arrayContainsBool, currentObject) {
-        if ((0, _equalObjects2.default)(currentObject, object)) arrayContainsBool = true;
-        return arrayContainsBool;
-    }, false);
-};
-
-exports.default = arrayContainsObject;
-
-}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/arrayContainsObject.jsx","/utilities")
-},{"../utilities/equalObjects.jsx":11,"buffer":2,"rH1JPG":4}],11:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-function equalObjects(object1, object2) {
-    return JSON.stringify(object1) === JSON.stringify(object2);
-}
-
-exports.default = equalObjects;
-
-}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/equalObjects.jsx","/utilities")
-},{"buffer":2,"rH1JPG":4}],12:[function(require,module,exports){
+},{"buffer":2,"rH1JPG":4}],9:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1912,7 +1793,7 @@ function explainWarning() {
 exports.default = explainWarning;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/explainWarning.jsx","/utilities")
-},{"buffer":2,"rH1JPG":4}],13:[function(require,module,exports){
+},{"buffer":2,"rH1JPG":4}],10:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1940,7 +1821,7 @@ function removeDocumentStyles() {
 exports.default = removeDocumentStyles;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/removeDocumentStyles.jsx","/utilities")
-},{"buffer":2,"rH1JPG":4}],14:[function(require,module,exports){
+},{"buffer":2,"rH1JPG":4}],11:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 "use strict";
 

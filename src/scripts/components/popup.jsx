@@ -1,13 +1,10 @@
 import getNodeCSSRules from '../polyfills/get-matched-css-rules.jsx';
 import CriticalCSS from '../generators/CriticalCSS.jsx';
-import DocumentCSSMediaRules from '../generators/DocumentCSSMediaRules.jsx';
 import selectText from '../utilities/selectText.jsx';
 import removeDocumentStyles from '../utilities/removeDocumentStyles.jsx';
 
 // Generates the popup with wich the user will interact
 function showPopup() {
-    var jaja = new DocumentCSSMediaRules();
-    console.log(jaja.generate());
     var copyGeneratedStylesheet = function(event) {
         event.preventDefault();
         event.stopPropagation();
