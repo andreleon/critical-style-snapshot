@@ -8,6 +8,8 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var browserify = require('gulp-browserify');
 var babel = require("gulp-babel");
+var zip = require('gulp-zip');
+var sequence = require('gulp-sequence')
 
 var DEST_ROOT = 'dist';
 var SRC_ROOT = 'src';
@@ -22,7 +24,13 @@ var src_scripts = [
     'src/scripts/execute.jsx'
 ];
 
-// Compile Our Sass
+gulp.task('zip', function() {
+    return gulp.src(`${DEST_ROOT}/**/*`)
+        .pipe(zip('critical-style-snapshot.zip'))
+        .pipe(gulp.dest('.'));
+});
+
+// CSS
 gulp.task('sass', function() {
     return gulp.src(src_styles)
         .pipe(concat('style.scss'))
@@ -36,7 +44,7 @@ gulp.task('images', function() {
         .pipe(gulp.dest(`${DEST_ROOT}/images`));
 });
 
-// Concatenate & Minify JS
+// Concatenate
 gulp.task('scripts', function() {
 
     return gulp.src(src_scripts)
@@ -61,7 +69,7 @@ gulp.task('manifest', function() {
         .pipe(gulp.dest(`${DEST_ROOT}`));
 });
 
-// Watch Files For Changes
+// Watch
 gulp.task('watch', function() {
     gulp.watch('src/manifest.json',     ['manifest']);
     gulp.watch('src/index.js',          ['index']);
@@ -70,5 +78,8 @@ gulp.task('watch', function() {
     gulp.watch('src/images/**/*',       ['images']);
 });
 
-// Default Task
+// Package
+gulp.task('package', sequence(['manifest', 'index', 'scripts', 'sass', 'images'], ['zip']));
+
+// Default
 gulp.task('default', ['manifest', 'index', 'scripts', 'sass', 'images', 'watch']);
