@@ -1,7 +1,7 @@
 /*
  * Fallback for window.getMatchedCSSRules(node);
  * Forked from: (A Gecko only polyfill for Webkit's window.getMatchedCSSRules) https://gist.github.com/ydaniv/3033012
- * This version is compatible with most browsers
+ * This version is compatible with most browsers hoi
  */
 var ELEMENT_RE = /[\w-]+/g;
 var ID_RE = /#[\w-]+/g;

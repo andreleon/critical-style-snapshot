@@ -1,0 +1,47 @@
+{
+  "name": "critical-style-snapshot",
+  "version": "0.0.7",
+  "description": "Capture CSS above the fold",
+  "main": " ",
+  "scripts": {
+    "test": " "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreleon/critical-snapshot.git"
+  },
+  "author": "Léon Smit <leon@lifely.nl> (https://github.com/andreleon)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreleon/critical-snapshot/issues"
+  },
+  "homepage": "https://github.com/andreleon/critical-snapshot#readme",
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2016": "^6.16.0",
+    "babelify": "^7.3.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-uglify": "^2.0.0",
+    "jshint": "^2.9.3"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2016"
+          ]
+        }
+      ]
+    ]
+  }
+}
