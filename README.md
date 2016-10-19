@@ -1,7 +1,7 @@
 ## Critical Style Snapshot
 
 <p align="center">
-    <img width="440" src="/src/promotional.png?raw=true" text-align="center">
+    <img width="440" src="promotional.png?raw=true" text-align="center">
 </p>
 
 Capture critical CSS above the fold with one click. Works for most websites, this extension captures 99% of the of the currently active media query CSS. Selectors like pseudo-elements don't get captured (yet), so in some cases minor tweaking is nessescary.
@@ -17,7 +17,7 @@ Inspired by [CriticalCSS Bookmarklet and Devtool Snippetjs](https://gist.github.
 No setup required, [Install it directly from the Chrome Webstore](https://chrome.google.com/webstore/detail/critical-snapshot/gkoeffcejdhhojognlonafnijfkcepob)
 
 ## Usage
-Resize your browser window to the desired device width and click the capture icon ![icon](/src/icon19.png "icon") in your chome extensions bar. Copy the outputted style, then paste it in a style element just before the first `<link rel="stylesheet" href="style.css" ../>` element. This way your project CSS will override the "above the fold" CSS when it is loaded.
+Resize your browser window to the desired device width and click the capture icon ![icon](/src/images/icon19.png "icon") in your chome extensions bar. Copy the outputted style, then paste it in a style element just before the first `<link rel="stylesheet" href="style.css" ../>` element. This way your project CSS will override the "above the fold" CSS when it is loaded.
 
 Example:
 ```
