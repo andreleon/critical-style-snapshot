@@ -19,15 +19,15 @@ var src_styles = [
 ];
 
 var src_scripts = [
-    'src/scripts/critical.jsx'
+    'src/scripts/execute.jsx'
 ];
 
 // Compile Our Sass
 gulp.task('sass', function() {
     return gulp.src(src_styles)
-        .pipe(concat('critical.scss'))
+        .pipe(concat('style.scss'))
         .pipe(sass())
-        .pipe(rename('critical.css'))
+        .pipe(rename('style.css'))
         .pipe(gulp.dest(`${DEST_ROOT}/styles`));
 });
 
@@ -41,14 +41,13 @@ gulp.task('scripts', function() {
 
     return gulp.src(src_scripts)
         .pipe(babel({
-            presets: ['es2016']
+            presets: ['es2015']
         }))
         .pipe(browserify({
-            insertGlobals : true,
-            debug : true
+            insertGlobals : true
         }))
         //.pipe(uglify())
-        .pipe(rename('critical.js'))
+        .pipe(rename('execute.js'))
         .pipe(gulp.dest(`${DEST_ROOT}/scripts`));
 });
 
