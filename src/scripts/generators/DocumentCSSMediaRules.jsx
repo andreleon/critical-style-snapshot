@@ -34,7 +34,8 @@ var DocumentCSSMediaRules = function() {
                 if (match) {
                     outputObject[match[1]] = {
                         value: parseInt(match[2]),
-                        unit: match[3]
+                        unit: match[3],
+                        orig: query
                     };
                 }
                 return outputObject;

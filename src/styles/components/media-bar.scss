@@ -1,0 +1,23 @@
+.alcss-media-bar {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100vw;
+    // background-color: #f0f;
+
+    > .alcss-media-rule {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+
+        &:nth-child(odd) {
+            background-color: rgba(#f0f, .5);
+        }
+
+        &:nth-child(even) {
+            background-color: rgba(#0f0, .5);
+        }
+    }
+}

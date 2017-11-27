@@ -1411,6 +1411,10 @@ var _CriticalCSS = require('../generators/CriticalCSS.jsx');
 
 var _CriticalCSS2 = _interopRequireDefault(_CriticalCSS);
 
+var _DocumentCSSMediaRules = require('../generators/DocumentCSSMediaRules.jsx');
+
+var _DocumentCSSMediaRules2 = _interopRequireDefault(_DocumentCSSMediaRules);
+
 var _selectText = require('../utilities/selectText.jsx');
 
 var _selectText2 = _interopRequireDefault(_selectText);
@@ -1421,13 +1425,45 @@ var _removeDocumentStyles2 = _interopRequireDefault(_removeDocumentStyles);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var containerElement;
+
+function createMediaBar(mediaRules) {
+    var mediaBar = document.createElement('div');
+    mediaBar.className = 'alcss-media-bar';
+    var barHeight = 5;
+
+    mediaBar.style.height = mediaRules.length * barHeight + 'px';
+    var barHTML = '';
+
+    mediaRules.forEach(function (rule, index) {
+        if (rule['min-width']) {
+            var minWidth = rule['min-width'];
+            barHTML += '\n                <div class="alcss-media-rule"\n                    style="\n                        height: ' + barHeight + 'px;\n                        left: ' + minWidth.value + minWidth.unit + ';\n                        right: 0;\n                        bottom: ' + index * barHeight + 'px;\n                    ">\n                </div>\n            ';
+        } else if (rule['max-width']) {
+            var maxWidth = rule['max-width'];
+            barHTML += '\n                <div class="alcss-media-rule"\n                    style="\n                        height: ' + barHeight + 'px;\n                        width: ' + maxWidth.value + maxWidth.unit + ';\n                        bottom: ' + index * barHeight + 'px;\n                    ">\n                </div>\n            ';
+        }
+    });
+
+    mediaBar.innerHTML = barHTML;
+    return mediaBar;
+}
+
+function showMediaQueries(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var mediaRules = new _DocumentCSSMediaRules2.default().generate();
+    var bar = createMediaBar(mediaRules);
+    containerElement.append(bar);
+}
+
 // Generates the popup with wich the user will interact
 function showPopup() {
     var copyGeneratedStylesheet = function copyGeneratedStylesheet(event) {
         event.preventDefault();
         event.stopPropagation();
 
-        (0, _selectText2.default)('CriticalSnap__output-css');
+        (0, _selectText2.default)('alcss-output-css');
         document.execCommand('copy');
         copyButton.style.backgroundColor = "#34A853";
         copyButton.style.color = "#fff";
@@ -1453,7 +1489,7 @@ function showPopup() {
     var selectGeneratedStylesheet = function selectGeneratedStylesheet(event) {
         event.preventDefault();
         event.stopPropagation();
-        (0, _selectText2.default)('CriticalSnap__output-css');
+        (0, _selectText2.default)('alcss-output-css');
     };
 
     var closePopup = function closePopup(event) {
@@ -1463,17 +1499,19 @@ function showPopup() {
 
     var createPopup = function createPopup(content) {
         var popup = document.createElement('div');
-        popup.id = 'CriticalSnap';
+        popup.id = 'alcss-container';
 
         var divHTML = '';
-        divHTML += '<div><h1>Critical Snapshot</h1>';
-        divHTML += '<p id="CriticalSnap__output-css">';
+        divHTML += '<div class="alcss-content"><h1 class="alcss-title">Critical Snapshot</h1>';
+        divHTML += '<p id="alcss-output-css">';
         divHTML += content;
         divHTML += '</p>';
-        divHTML += '<div id="CriticalSnap__buttons">';
-        divHTML += '<button type="button" class="CriticalSnap__button" id="CriticalSnap__copy">Copy</button>';
-        divHTML += '<button type="button" class="CriticalSnap__button" id="CriticalSnap__preview">Preview</button>';
-        divHTML += '<button type="button" class="CriticalSnap__button" id="CriticalSnap__close">Close</button>';
+        divHTML += '<div id="alcss-buttons">';
+        divHTML += '<button type="button" class="alcss-button" id="alcss__copy">Copy</button>';
+        divHTML += '<button type="button" class="alcss-button" id="alcss__preview">Preview</button>';
+        divHTML += '<button type="button" class="alcss-button" id="alcss__close">Close</button>';
+        divHTML += '<button type="button" class="alcss-button" id="alcss__media">Show @media queries</button>';
+        // divHTML +=          '<a class="github-button" href="https://github.com/andreleon/critical-style-snapshot" data-icon="octicon-star" data-style="mega" data-count-href="/andreleon/critical-style-snapshot/stargazers" data-count-api="/repos/andreleon/critical-style-snapshot#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star andreleon/critical-style-snapshot on GitHub">Star</a>'
         divHTML += '</div>';
         divHTML += '</div>';
 
@@ -1483,10 +1521,11 @@ function showPopup() {
     };
 
     var minifyPopup = function minifyPopup() {
-        popup.className = 'CriticalSnap__minified';
+        popup.className = 'alcss-container__minified';
     };
 
     var destroyPopup = function destroyPopup() {
+        mediaButton.removeEventListener('click', showMediaQueries);
         copyButton.removeEventListener('click', copyGeneratedStylesheet);
         previewButton.removeEventListener('click', previewGeneratedStylesheet);
         outputElement.removeEventListener('click', selectGeneratedStylesheet);
@@ -1503,11 +1542,13 @@ function showPopup() {
     var popup = createPopup(stylesheet);
     document.body.appendChild(popup);
 
-    var copyButton = document.getElementById('CriticalSnap__copy');
-    var previewButton = document.getElementById('CriticalSnap__preview');
-    var outputElement = document.getElementById('CriticalSnap__output-css');
-    var containerElement = document.getElementById('CriticalSnap');
+    var mediaButton = document.getElementById('alcss__media');
+    var copyButton = document.getElementById('alcss__copy');
+    var previewButton = document.getElementById('alcss__preview');
+    var outputElement = document.getElementById('alcss-output-css');
+    containerElement = document.getElementById('alcss-container');
 
+    mediaButton.addEventListener('click', showMediaQueries);
     copyButton.addEventListener('click', copyGeneratedStylesheet);
     previewButton.addEventListener('click', previewGeneratedStylesheet);
     outputElement.addEventListener('click', selectGeneratedStylesheet);
@@ -1517,7 +1558,7 @@ function showPopup() {
 exports.showPopup = showPopup;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/components/popup.jsx","/components")
-},{"../generators/CriticalCSS.jsx":7,"../polyfills/get-matched-css-rules.jsx":8,"../utilities/removeDocumentStyles.jsx":10,"../utilities/selectText.jsx":11,"buffer":2,"rH1JPG":4}],6:[function(require,module,exports){
+},{"../generators/CriticalCSS.jsx":7,"../generators/DocumentCSSMediaRules.jsx":8,"../polyfills/get-matched-css-rules.jsx":9,"../utilities/removeDocumentStyles.jsx":13,"../utilities/selectText.jsx":14,"buffer":2,"rH1JPG":4}],6:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1525,7 +1566,7 @@ var _popup = require('./components/popup.jsx');
 
 (0, _popup.showPopup)();
 
-}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_6df78761.js","/")
+}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_653a8acd.js","/")
 },{"./components/popup.jsx":5,"buffer":2,"rH1JPG":4}],7:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
@@ -1611,7 +1652,83 @@ var CriticalCSS = function CriticalCSS(window, document, options) {
 exports.default = CriticalCSS;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/generators/CriticalCSS.jsx","/generators")
-},{"../utilities/explainWarning.jsx":9,"buffer":2,"rH1JPG":4}],8:[function(require,module,exports){
+},{"../utilities/explainWarning.jsx":12,"buffer":2,"rH1JPG":4}],8:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _arrayContainsObject = require('../utilities/arrayContainsObject.jsx');
+
+var _arrayContainsObject2 = _interopRequireDefault(_arrayContainsObject);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var DocumentCSSMediaRules = function DocumentCSSMediaRules() {
+    var documentMediaRules = [];
+    var toArray = function toArray(list) {
+        list = list || {};
+        return [].slice.call(list);
+    };
+
+    var stylesheets = toArray(document.styleSheets);
+    stylesheets.forEach(function (stylesheet) {
+        var rules = toArray(stylesheet.cssRules || stylesheet.rules || []);
+        rules.forEach(function (rule) {
+            // console.log(rule.type)
+            if (rule.type === CSSRule.MEDIA_RULE) documentMediaRules.push(rule);
+        });
+    });
+
+    var hasNumber = function hasNumber(text) {
+        var number = parseFloat(text.replace(/[^\d.]/g, ''));
+        return !isNaN(number);
+    };
+
+    this.generate = function () {
+        var unique = [];
+        documentMediaRules.forEach(function (item) {
+            var mediaRegEx = /[\(](min-width|max-width):\s([0-9]{1,})(rem|em|px|%|vw|vh|cm|ex|in|mm|pc|pt|vmin)[\)]/gi;
+            var queries = item.media.mediaText.match(mediaRegEx);
+            if (!queries) return;
+            var mediaObject = queries.reduce(function (outputObject, query) {
+                var regex = /[\(](min-width|max-width):\s([0-9]{1,})(rem|em|px|%|vw|vh|cm|ex|in|mm|pc|pt|vmin)[\)]/gi;
+                var match = regex.exec(query);
+                if (match) {
+                    outputObject[match[1]] = {
+                        value: parseInt(match[2]),
+                        unit: match[3],
+                        orig: query
+                    };
+                }
+                return outputObject;
+            }, {});
+
+            if (!(0, _arrayContainsObject2.default)(unique, mediaObject)) unique.push(mediaObject);
+        });
+        return unique.sort(function (a, b) {
+            if (a['min-width'] && b['min-width']) {
+                if (a['min-width'].value < b['min-width'].value) return -1;
+                if (a['min-width'].value > b['min-width'].value) return 1;
+            }
+            if (!a['min-width'] && b['min-width']) {
+                if (a['max-width'].value < b['min-width'].value) return -1;
+                if (a['max-width'].value > b['min-width'].value) return 1;
+            }
+            if (a['min-width'] && !b['min-width']) {
+                if (a['min-width'].value < b['max-width'].value) return -1;
+                if (a['min-width'].value > b['max-width'].value) return 1;
+            }
+            return 0;
+        });
+    };
+}; // regex: [\(](min-width|max-width):\s([0-9]{1,})(rem|em|px|%|vw|vh|cm|ex|in|mm|pc|pt|vmin)[\)]
+exports.default = DocumentCSSMediaRules;
+
+}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/generators/DocumentCSSMediaRules.jsx","/generators")
+},{"../utilities/arrayContainsObject.jsx":10,"buffer":2,"rH1JPG":4}],9:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1777,7 +1894,45 @@ function getNodeCSSRules(element /*, pseudo, author_only*/) {
 exports.default = getNodeCSSRules;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/polyfills/get-matched-css-rules.jsx","/polyfills")
-},{"buffer":2,"rH1JPG":4}],9:[function(require,module,exports){
+},{"buffer":2,"rH1JPG":4}],10:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _equalObjects = require('../utilities/equalObjects.jsx');
+
+var _equalObjects2 = _interopRequireDefault(_equalObjects);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function arrayContainsObject(array, object) {
+    return array.reduce(function (arrayContainsBool, currentObject) {
+        if ((0, _equalObjects2.default)(currentObject, object)) arrayContainsBool = true;
+        return arrayContainsBool;
+    }, false);
+};
+
+exports.default = arrayContainsObject;
+
+}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/arrayContainsObject.jsx","/utilities")
+},{"../utilities/equalObjects.jsx":11,"buffer":2,"rH1JPG":4}],11:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function equalObjects(object1, object2) {
+    return JSON.stringify(object1) === JSON.stringify(object2);
+}
+
+exports.default = equalObjects;
+
+}).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/equalObjects.jsx","/utilities")
+},{"buffer":2,"rH1JPG":4}],12:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1793,7 +1948,7 @@ function explainWarning() {
 exports.default = explainWarning;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/explainWarning.jsx","/utilities")
-},{"buffer":2,"rH1JPG":4}],10:[function(require,module,exports){
+},{"buffer":2,"rH1JPG":4}],13:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -1821,7 +1976,7 @@ function removeDocumentStyles() {
 exports.default = removeDocumentStyles;
 
 }).call(this,require("rH1JPG"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/utilities/removeDocumentStyles.jsx","/utilities")
-},{"buffer":2,"rH1JPG":4}],11:[function(require,module,exports){
+},{"buffer":2,"rH1JPG":4}],14:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 "use strict";
 
