@@ -1,7 +1,7 @@
 {
     "name": "Critical Style Snapshot",
     "description": "Capture CSS above the fold with one click.",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "permissions": [
         "activeTab"
     ],

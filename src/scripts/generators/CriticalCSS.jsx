@@ -1,4 +1,5 @@
 import explainWarning from '../utilities/explainWarning.jsx';
+import getNodeCSSRules from '../polyfills/get-matched-css-rules.jsx';
 // CSS generator
 var CriticalCSS = function(window, document, options) {
     var options = options || {};

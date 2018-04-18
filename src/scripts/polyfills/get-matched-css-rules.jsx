@@ -25,7 +25,12 @@ function getSheetRules (stylesheet) {
     // if this sheet's media is specified and doesn't match the viewport then skip it
     if ( sheet_media && sheet_media.length && ! window.matchMedia(sheet_media).matches ) return [];
     // get the style rules of this sheet
-    return toArray(stylesheet.cssRules);
+
+    try {
+        return toArray(stylesheet.cssRules || stylesheet.rules || []);
+    } catch (err) {
+        return [];
+    }
 }
 
 function _find (string, re) {

@@ -1,6 +1,6 @@
 {
   "name": "critical-style-snapshot",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Capture CSS above the fold",
   "main": "index.js",
   "repository": {
